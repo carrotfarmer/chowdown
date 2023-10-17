@@ -45,12 +45,8 @@ fn divider(input: &str) -> IResult<&str, Element> {
 
 fn blockquote(input: &str) -> IResult<&str, Element> {
     map_res(
-        /* Bundles two parsers together, and outputs (A, B),
-         * the outputs of the two parsers respectively.
-         */
         pair(is_a::<&str, &str, _>("> "), not_line_ending::<&str, _>),
         |(_, text)| -> Result<Element, nom::error::Error<&str>> {
-            // Heading "level" (size) is defined by the amount of '#'s
             Ok(Element::Blockquote {
                 text: text.to_owned(),
             })
