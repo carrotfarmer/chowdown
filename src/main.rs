@@ -106,33 +106,48 @@ divided.
 **bold text**
 *italic text*
 hello **bold** world
+unclosed *italic
     ".trim();
 
 
     // Produces a vector of elements
     let (residual, elements): (&str, Vec<_>) = many0(
         /* Wrapped in "multispace0" to remove newlines & spaces */
-        delimited(
-            multispace0,
-            alt((
-                headings,
-                divider,
-                blockquote,
-                bold,
-                italics,
+        alt((
+            delimited(
+                multispace0,
+                alt((
+                    headings,
+                    divider,
+                    blockquote,
+                    bold,
+                    italics,
 
-                /* plaintext, but mapped into an element */
-                map_res(
-                    plain_text,
-                    |text: &str| -> Result<Element, Error<&str>> {
-                        Ok(Element::PlainText {
-                            text: text.to_owned(),
-                        })
-                    },
-                )
-            )),
-            multispace0
-        )
+                    /* plaintext, but mapped into an element */
+                    map_res(
+                        plain_text,
+                        |text: &str| -> Result<Element, Error<&str>> {
+                            Ok(Element::PlainText {
+                                text: text.to_owned(),
+                            })
+                        },
+                    ),
+
+                           )),
+                multispace0
+            ),
+            /* hacky way to consume all residual text
+             * Handles the "a*b" case.
+             */
+            map_res(
+                is_not("\n\r"),
+                |text: &str| -> Result<Element, Error<&str>> {
+                    Ok(Element::PlainText {
+                        text: text.to_owned(),
+                    })
+                },
+            )
+        ))
     )(string)
         .unwrap();
 
