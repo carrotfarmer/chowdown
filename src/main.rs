@@ -1,12 +1,3 @@
-use nom::branch::alt;
-use nom::bytes::complete::{is_not, tag};
-use nom::character::complete::{char, line_ending, multispace0, not_line_ending};
-use nom::combinator::map_res;
-use nom::error::Error;
-use nom::multi::{many0, many1};
-use nom::sequence::{delimited, pair, terminated};
-use nom::IResult;
-
 mod parser;
 
 fn main() {
