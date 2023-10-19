@@ -8,7 +8,7 @@ use nom::sequence::{delimited, pair, terminated};
 use nom::IResult;
 
 //Logical representation of markdown elements.
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Element {
     Heading { level: u32, text: String },
     Divider,
@@ -66,12 +66,6 @@ impl Parser {
             )),
         )(self.contents.as_str())
         .unwrap();
-
-        if residual.len() != 0 {
-            println!("should not be any residual.");
-            println!("residual:\n{residual}");
-            panic!();
-        }
 
         return elements;
     }
@@ -139,4 +133,67 @@ impl Parser {
     fn plain_text(input: &str) -> IResult<&str, &str> {
         is_not("*\n\r")(input)
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_headings() {
+        let input = r"
+# Big heading
+Hello!
+### Small heading
+divider?
+---
+divided.
+> blockquote
+> deez
+> nuts
+**bold text**
+*italic text*
+unclosed *italic
+";
+
+        let elements = Parser::new(input.to_owned()).parse();
+
+        let expected = vec![
+            Element::Heading {
+                level: 1,
+                text: "Big heading".to_owned(),
+            },
+            Element::PlainText {
+                text: "Hello!".to_owned(),
+            },
+            Element::Heading {
+                level: 3,
+                text: "Small heading".to_owned(),
+            },
+            Element::PlainText {
+                text: "divider?".to_owned(),
+            },
+            Element::Divider,
+            Element::PlainText {
+                text: "divided.".to_owned(),
+            },
+            Element::Blockquote {
+                text: "blockquote\r\ndeez\r\nnuts\r\n".to_owned(),
+            },
+            Element::Bold {
+                text: "bold text".to_owned(),
+            },
+            Element::Italics {
+                text: "italic text".to_owned(),
+            },
+            Element::PlainText {
+                text: "unclosed ".to_owned(),
+            },
+            Element::PlainText {
+                text: "*italic".to_owned(),
+            },
+        ];
+
+        assert_eq!(elements, expected);
+	}
 }
