@@ -29,7 +29,7 @@ impl Parser {
 
     pub fn parse(&self) -> Vec<Element> {
         // Produces a vector of elements
-        let (residual, elements): (&str, Vec<_>) = many0(
+        let (_residual, elements): (&str, Vec<_>) = many0(
             /* Wrapped in "multispace0" to remove newlines & spaces */
             alt((
                 delimited(
@@ -140,7 +140,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_headings() {
+    fn test_markdown() {
         let input = r"
 # Big heading
 Hello!
@@ -195,5 +195,5 @@ unclosed *italic
         ];
 
         assert_eq!(elements, expected);
-	}
+    }
 }
