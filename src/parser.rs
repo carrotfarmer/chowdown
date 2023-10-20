@@ -10,7 +10,7 @@ use nom::IResult;
 //Logical representation of markdown elements.
 #[derive(Debug, PartialEq, Eq)]
 pub enum Element {
-    Heading { level: u32, text: String },
+    Heading { level: usize, text: String },
     Divider,
     Blockquote { text: String },
     Bold { text: String },
@@ -78,7 +78,7 @@ impl Parser {
             ),
             |(hashtags, text)| -> Result<Element, Error<&str>> {
                 // Heading "level" (size) is defined by the amount of '#'s
-                let level = hashtags.len() as u32;
+                let level = hashtags.len();
                 Ok(Element::Heading {
                     level,
                     text: text.trim().to_owned(),
