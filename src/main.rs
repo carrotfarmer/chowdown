@@ -1,3 +1,4 @@
+mod generator;
 mod parser;
 
 fn main() {
@@ -21,6 +22,6 @@ unclosed *italic
 
     let elements = parser::Parser::new(string.to_owned()).parse();
 
-    // Print Result
-    elements.iter().for_each(|e| println!("{:?}", e));
+    let generator = generator::Generator::new(elements);
+    println!("{}", generator.generate());
 }
