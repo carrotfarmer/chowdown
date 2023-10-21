@@ -16,6 +16,7 @@ pub enum Element {
     Bold { text: String },
     Italics { text: String },
     PlainText { text: String },
+    InlineCode { text: String },
 }
 
 pub struct Parser {
@@ -49,6 +50,7 @@ impl Parser {
                         Self::blockquote,
                         Self::bold,
                         Self::italics,
+                        Self::inline_code,
                         /* plaintext, but mapped into an element */
                         map_res(
                             Self::plain_text,
@@ -139,8 +141,19 @@ impl Parser {
         )(input)
     }
 
+    fn inline_code(input: &str) -> IResult<&str, Element> {
+        map_res(
+            delimited(tag("`"), Self::plain_text, tag("`")),
+            |text: &str| -> Result<Element, Error<&str>> {
+                Ok(Element::InlineCode {
+                    text: text.to_owned(),
+                })
+            },
+        )(input)
+    }
+
     fn plain_text(input: &str) -> IResult<&str, &str> {
-        is_not("*\n\r")(input)
+        is_not("*`\n\r")(input)
     }
 }
 
@@ -163,6 +176,7 @@ divided.
 **bold text**
 *italic text*
 unclosed *italic
+`let x = 69;`
 ";
 
         let elements = Parser::new(input.to_owned()).parse();
@@ -200,6 +214,9 @@ unclosed *italic
             },
             Element::PlainText {
                 text: "*italic".to_owned(),
+            },
+            Element::InlineCode {
+                text: "let x = 69;".to_owned(),
             },
         ];
 

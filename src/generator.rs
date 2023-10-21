@@ -24,6 +24,7 @@ impl Generator {
                     output.push_str(&format!("<h{}>{}</h{}>", level, text, level))
                 }
                 Element::Divider => output.push_str("<hr />"),
+                Element::InlineCode { text } => output.push_str(&format!("<code>{}</code>", text)),
             }
         }
 
