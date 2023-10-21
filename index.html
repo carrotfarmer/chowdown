@@ -2,47 +2,52 @@
 <html>
 
 <head>
-  <title>Chowdown</title>
+	<title>Chowdown</title>
 </head>
 
 <body>
-  <h1>Chowdown</h1>
-  <textarea id="input"></textarea>
-  <button id="run">chowdown~</button>
+	<h1>Chowdown</h1>
+	<textarea id="input"></textarea>
+	<button id="run">chowdown~</button>
 
-  <h3>Raw HTML</h3>
-  <hr>
-  <div id="output-raw"></div>
+	<h3>Raw HTML</h3>
+	<hr>
+	<div id="output-raw"></div>
 
-  <h3>Formatted HTML</h3>
-  <hr>
-  <div id="output-html"></div>
+	<h3>Formatted HTML</h3>
+	<hr>
+	<div id="output-html"></div>
 
 
-  <script type='module'>
-    import init, { parse as wasm_parse } from './dist/chowdown.js';
+	<script type='module'>
+		import init, {parse as wasm_parse} from './dist/chowdown.js';
 
-    console.log('== Initializing.. ==');
-    await init();
-    console.log('== Initialized ==');
+		console.log('== Initializing.. ==');
+		await init();
+		console.log('== Initialized ==');
 
-    async function parse (markdown) 
-    {
-      console.log('== Parsing.. ==');
-      let html = wasm_parse(markdown);
-      console.log('== Done! ==');
+		async function parse(markdown) {
+			console.log('== Parsing.. ==');
+			let html = wasm_parse(markdown);
+			console.log('== Done! ==');
 
-      return html;
-    }
+			return html;
+		}
 
-    document.querySelector("#run").onclick = async () => {
-      const input = document.querySelector("#input").value;
-      const html = await parse(input)
+		document.querySelector("#run").onclick = async () => {
+			const input = document.querySelector("#input").value;
+			let md = input
 
-      document.querySelector("#output-raw").innerText = html;
-      document.querySelector("#output-html").innerHTML = html;
-    }
-  </script>
+			if (!md[md.length - 1] == '\n') {
+				md = md + '\n'
+			}
+
+			const html = await parse(md)
+
+			document.querySelector("#output-raw").innerText = html;
+			document.querySelector("#output-html").innerHTML = html;
+		}
+	</script>
 </body>
 
 </html>

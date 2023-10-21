@@ -24,7 +24,16 @@ pub struct Parser {
 
 impl Parser {
     pub fn new(contents: String) -> Self {
-        Self { contents }
+        let mut new_contents = contents.clone();
+
+        if !new_contents.ends_with("\n") {
+            println!("contents does not end with \\n");
+            new_contents.push_str("\n");
+        }
+
+        Self {
+            contents: new_contents,
+        }
     }
 
     pub fn parse(&self) -> Vec<Element> {
