@@ -1,0 +1,10 @@
+{
+  "name": "chowdown",
+  "version": "0.1.0",
+  "files": [
+    "chowdown_bg.wasm",
+    "chowdown.js"
+  ],
+  "module": "chowdown.js",
+  "sideEffects": false
+}

@@ -1,6 +1,3 @@
-mod generator;
-mod parser;
-
 fn main() {
     /* get input */
     let string = r"
@@ -20,8 +17,5 @@ unclosed *italic
     "
     .trim();
 
-    let elements = parser::Parser::new(string.to_owned()).parse();
-
-    let generator = generator::Generator::new(elements);
-    println!("{}", generator.generate());
+    println!("{}", chowdown::parse(string.to_owned()));
 }
