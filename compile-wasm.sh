@@ -1,1 +1,1 @@
-wasm-pack build --no-typescript --target web --debug
+wasm-pack build -d dist --no-typescript --target web --debug
