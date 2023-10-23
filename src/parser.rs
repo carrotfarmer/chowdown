@@ -15,6 +15,7 @@ pub enum Element {
     Blockquote { text: String },
     Bold { text: String },
     Italics { text: String },
+    Strikethrough { text: String },
     PlainText { text: String },
     InlineCode { text: String },
 }
@@ -51,6 +52,7 @@ impl Parser {
                         Self::bold,
                         Self::italics,
                         Self::inline_code,
+                        Self::strikethrough,
                         /* plaintext, but mapped into an element */
                         map_res(
                             Self::plain_text,
@@ -152,8 +154,19 @@ impl Parser {
         )(input)
     }
 
+    fn strikethrough(input: &str) -> IResult<&str, Element> {
+        map_res(
+            delimited(tag("~~"), Self::plain_text, tag("~~")),
+            |text: &str| -> Result<Element, Error<&str>> {
+                Ok(Element::Strikethrough {
+                    text: text.to_owned(),
+                })
+            },
+        )(input)
+    }
+
     fn plain_text(input: &str) -> IResult<&str, &str> {
-        is_not("*`\n\r")(input)
+        is_not("*`~\n\r")(input)
     }
 }
 
@@ -177,6 +190,7 @@ divided.
 *italic text*
 unclosed *italic
 `let x = 69;`
+~~strikethru text~~
 ";
 
         let elements = Parser::new(input.to_owned()).parse();
@@ -217,6 +231,9 @@ unclosed *italic
             },
             Element::InlineCode {
                 text: "let x = 69;".to_owned(),
+            },
+            Element::Strikethrough {
+                text: "strikethru text".to_owned(),
             },
         ];
 

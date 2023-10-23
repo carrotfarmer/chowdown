@@ -25,6 +25,7 @@ impl Generator {
                 }
                 Element::Divider => output.push_str("<hr />"),
                 Element::InlineCode { text } => output.push_str(&format!("<code>{}</code>", text)),
+                Element::Strikethrough { text } => output.push_str(&format!("<s>{}</s>", text)),
             }
         }
 
@@ -63,12 +64,15 @@ mod test {
             Element::Italics {
                 text: "italic text".to_owned(),
             },
+            Element::Strikethrough {
+                text: "strikethru text".to_owned(),
+            },
         ];
 
         let generator = Generator::new(tokens);
         let html = generator.generate();
 
-        let expected = r#"<h1>Big heading</h1><p>Hello!</p><h3>Small heading</h3><p>divider?</p><hr /><p>divided.</p><b>bold text</b><i>italic text</i>"#;
+        let expected = r#"<h1>Big heading</h1><p>Hello!</p><h3>Small heading</h3><p>divider?</p><hr /><p>divided.</p><b>bold text</b><i>italic text</i><s>strikethru text</s>"#;
 
         assert_eq!(html, expected);
     }

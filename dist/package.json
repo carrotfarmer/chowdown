@@ -6,5 +6,7 @@
     "chowdown.js"
   ],
   "module": "chowdown.js",
-  "sideEffects": false
+  "sideEffects": [
+    "./snippets/*"
+  ]
 }
