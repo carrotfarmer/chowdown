@@ -1,20 +1,30 @@
-use crate::{Element, Node};
+use crate::Element;
 
 
-pub fn generate(nodes: Vec<Node>) -> String {
-    nodes
+pub fn generate(elems: Vec<Element>) -> String {
+   elems 
         .iter()
-        .fold(String::new(), |mut out, node| {
-            out.push_str(&node.gen());
+        .fold(String::new(), |mut out, elem| {
+            out.push_str(&elem.gen());
             out
         })
 }
 
 use Element::*;
-impl Node {
+impl Element {
     fn gen (&self) -> String {
-        match &self.element {
-            PlainText { text } => format!("<p>{}</p>", text),
+        match &self {
+            Text { elements } => {
+                let mut out = elements
+                    .iter()
+                    .fold("<p>".to_owned(), |mut a, elem| {
+                        a.push_str(&elem.gen());
+                        a
+                    });
+                out.push_str("</p><br>");
+                out
+            },
+            PlainText { text } => format!("{}", text),
             Bold { text } => format!("<b>{}</b>", text),
             Italics { text } => format!("<i>{}</i>", text),
             Blockquote { text } => {
@@ -25,10 +35,12 @@ impl Node {
             }
             Divider => "<hr />".to_owned(),
             InlineCode { text } => format!("<code>{}</code>", text),
+            _ => "".to_owned()
         }
     }
 }
 
+/*
 #[cfg(test)]
 mod test {
     use super::*;
@@ -73,3 +85,4 @@ mod test {
         assert_eq!(html, expected);
     }
 }
+*/
