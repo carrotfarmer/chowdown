@@ -1,6 +1,7 @@
 use crate::Element;
 
 
+/// Generates the HTML representation of each element.
 pub fn generate(elems: Vec<Element>) -> String {
    elems 
         .iter()
@@ -12,9 +13,13 @@ pub fn generate(elems: Vec<Element>) -> String {
 
 use Element::*;
 impl Element {
+
+    /// Generates the HTML representation for self. May recurse into children.
     fn gen (&self) -> String {
         match &self {
             Text { elements } => {
+                // Generate the representation for each "element" within the text element.
+                // For example, hi *shine* **!** is reprsented as Text: { elems: [ Plain{ hi }, Italic{ shine }, Bold{ ! } ] }
                 let mut out = elements
                     .iter()
                     .fold("<p>".to_owned(), |mut a, elem| {
@@ -24,17 +29,13 @@ impl Element {
                 out.push_str("</p><br>");
                 out
             },
-            PlainText { text } => format!("{}", text),
-            Bold { text } => format!("<b>{}</b>", text),
-            Italics { text } => format!("<i>{}</i>", text),
-            Blockquote { text } => {
-                format!("<blockquote>{}</blockquote>", text)
-            }
-            Heading { level, text } => {
-                format!("<h{}>{}</h{}>", level, text, level)
-            }
             Divider => "<hr />".to_owned(),
+            PlainText { text }  => format!("{}", text),
+            Bold { text }       => format!("<b>{}</b>", text),
+            Italics { text }    => format!("<i>{}</i>", text),
             InlineCode { text } => format!("<code>{}</code>", text),
+            Blockquote { text } => format!("<blockquote>{}</blockquote>", text),
+            Heading { level, text } => format!("<h{}>{}</h{}>", level, text, level),
             _ => "".to_owned()
         }
     }

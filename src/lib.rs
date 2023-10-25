@@ -57,12 +57,15 @@ pub fn parse(markdown: String) -> String {
     #[cfg(target_family = "wasm")]
     console_log!("hello");
 
+    // Tokenizes the raw input
     let elements = lexer::parse(markdown);
     println!("{:?}", elements);
 
+    // Parses the token stream into a vector of elements.
     let tree = parser::parse(elements);
     println!("{:?}", tree);
 
+    // Generate
     let html = generator::generate(tree);
 
     html

@@ -10,9 +10,9 @@ use nom::IResult;
 use super::Token;
 
 
-
-
+/// Tokenizes the raw string input. A Nom parser.
 pub fn parse(markdown: String) -> Vec<Token> {
+    
     // Produces a vector of Tokens
     let (residual, tokens): (&str, Vec<_>) = many0(
         alt((
