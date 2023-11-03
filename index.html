@@ -3,6 +3,7 @@
 
 <head>
 	<title>Chowdown</title>
+	<link href="prism.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -12,13 +13,14 @@
 
 	<h3>Raw HTML</h3>
 	<hr>
-	<div id="output-raw"></div>
+	<pre><code id="output-raw" class="language-markup">
+		</code></pre>
 
 	<h3>Formatted HTML</h3>
 	<hr>
 	<div id="output-html"></div>
 
-
+	<script src="prism.js"></script>
 	<script type='module'>
 		import init, {parse as wasm_parse} from './dist/chowdown.js';
 
@@ -44,7 +46,15 @@
 
 			const html = await parse(md)
 
-			document.querySelector("#output-raw").innerText = html;
+			// Select the code element inside #output-raw
+			const codeElement = document.querySelector("#output-raw");
+
+			// Set the innerHTML of the code element
+			codeElement.innerText = html;
+
+			// Highlight code using Prism
+			Prism.highlightAll();
+
 			document.querySelector("#output-html").innerHTML = html;
 		}
 	</script>
