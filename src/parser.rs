@@ -33,9 +33,7 @@ impl Parser {
             new_contents.push_str("\n");
         }
 
-        Self {
-            contents: new_contents,
-        }
+        Self { contents }
     }
 
     pub fn parse(&self) -> Vec<Element> {
